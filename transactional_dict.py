@@ -69,7 +69,7 @@ from contextlib import contextmanager
 
 
 class Undefined:
-    "represent deleted value in overly"
+    "represent deleted value in overlay"
 
 
 class TransactionalDict:
@@ -161,6 +161,7 @@ class TransactionalDict:
 @contextmanager
 def transaction(original_dict):
     """ manage transaction as context
+
     >>> data = {1: 1}
     >>> with transaction(data) as rw:
     ...   rw[1] = "a"
@@ -182,8 +183,6 @@ def transaction(original_dict):
     Exception
     >>> data
     {1: 1}
-
-
     """
     assert isinstance(original_dict, dict)
     try:
