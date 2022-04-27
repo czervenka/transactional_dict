@@ -1,0 +1,15 @@
+[tool.poetry]
+name = "transactional_dict"
+version = "0.1.0"
+description = ""
+authors = ["Robin Gottfried <fw_github@kebet.cz>"]
+
+[tool.poetry.dependencies]
+python = "^3.10"
+
+[tool.poetry.dev-dependencies]
+pytest = "^7.1.2"
+
+[build-system]
+requires = ["poetry-core>=1.0.0"]
+build-backend = "poetry.core.masonry.api"
