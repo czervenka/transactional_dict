@@ -3,15 +3,22 @@
 >>> test_values = {'1': 1, '2': 2, 'nested': {'1': 1}}
 >>> d = TransactionalDict(test_values)
 
+>>> not d.diff()  # diff is empty now - there are no changes
+True
+
 >>> d["1"] = "a"  # edit in transaction
 >>> d["1"]
 'a'
+>>> d.diff()["1"]
+(1, 'a')
 
 >>> d["3"] = 3  # new key in transaction
 >>> d["3"]
 3
 >>> "3" in d
 True
+>>> d.diff()["3"]
+(Undefined, 3)
 
 >>> del d["2"]  # delete key in transaction
 >>> d["2"]
@@ -20,12 +27,19 @@ Traceback (most recent call last):
 KeyError: 'Key 2 has been deleted in current transaction.'
 >>> "2" in d
 False
+>>> d.diff()["2"]
+(2, Undefined)
 
 # items created and deleted in transaction are cleaned (not marked as a change)
 >>> d["4"] = 4
 >>> del d["4"]
 >>> "4" in d._overlay
 False
+>>> d.diff()["4"]
+Traceback (most recent call last):
+...
+KeyError: '4'
+
 
 >>> d["nested"]["1"] = 2  # even nested dictionaries are transacted
 >>> d["nested"]["1"]
@@ -67,8 +81,11 @@ True
 from itertools import chain
 from contextlib import contextmanager
 
+class UndefinedMetaclass(type):
+    def __repr__(cls):
+        return cls.__name__
 
-class Undefined:
+class Undefined(metaclass=UndefinedMetaclass):
     "represent deleted value in overlay"
 
 
